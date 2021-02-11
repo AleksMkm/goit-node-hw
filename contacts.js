@@ -3,11 +3,11 @@ import * as path from 'path';
 
 import { v4 as generateId } from 'uuid';
 
-import { exitCode, handleError } from './lib/errorHandler.js';
+import { handleError } from './lib/errorHandler.js';
 
 const contactsPath = path.resolve('db/contacts.json');
 
-console.log(`path to contacts.json: ${contactsPath}`);
+// console.log(`path to contacts.json: ${contactsPath}`);
 
 const encoding = 'utf8';
 
@@ -21,8 +21,6 @@ export async function listContacts() {
   }
 }
 
-// listContacts();
-
 export async function getContactById(contactId) {
   try {
     const result = await fs.readFile(contactsPath, encoding);
@@ -35,8 +33,6 @@ export async function getContactById(contactId) {
     handleError(error);
   }
 }
-
-// getContactById(7);
 
 export async function removeContact(contactId) {
   try {
@@ -59,8 +55,6 @@ export async function removeContact(contactId) {
   }
 }
 
-// removeContact(6);
-
 export async function addContact(name, email, phone) {
   try {
     const result = await fs.readFile(contactsPath, encoding);
@@ -74,5 +68,3 @@ export async function addContact(name, email, phone) {
     handleError(error);
   }
 }
-
-// addContact('test', 'test@test.test', '1234567');
