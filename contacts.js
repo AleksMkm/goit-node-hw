@@ -11,10 +11,19 @@ const contactsPath = path.resolve('db/contacts.json');
 
 const encoding = 'utf8';
 
-export async function listContacts() {
+async function readContacts() {
   try {
     const result = await fs.readFile(contactsPath, encoding);
     const contacts = JSON.parse(result);
+    return contacts;
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+export async function listContacts() {
+  try {
+    const contacts = await readContacts();
     console.table(contacts);
   } catch (error) {
     handleError(error);
@@ -23,8 +32,7 @@ export async function listContacts() {
 
 export async function getContactById(contactId) {
   try {
-    const result = await fs.readFile(contactsPath, encoding);
-    const contacts = JSON.parse(result);
+    const contacts = await readContacts();
     const requiredContact = contacts.filter(
       contact => contact.id === contactId,
     );
@@ -36,8 +44,7 @@ export async function getContactById(contactId) {
 
 export async function removeContact(contactId) {
   try {
-    const result = await fs.readFile(contactsPath, encoding);
-    const contacts = JSON.parse(result);
+    const contacts = await readContacts();
     if (contacts.find(contact => contact.id === contactId)) {
       console.log('there is a contact which has to be removed');
       const updatedContactList = contacts.filter(
@@ -57,8 +64,7 @@ export async function removeContact(contactId) {
 
 export async function addContact(name, email, phone) {
   try {
-    const result = await fs.readFile(contactsPath, encoding);
-    const contacts = JSON.parse(result);
+    const contacts = await readContacts();
     const newContact = { id: generateId(), name, email, phone };
     const updatedContactList = [...contacts, newContact];
     await fs.writeFile(contactsPath, JSON.stringify(updatedContactList));
