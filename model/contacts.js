@@ -1,11 +1,11 @@
-import * as fs from 'fs/promises';
-import * as path from 'path';
+const fs = require('fs/promises');
+const path = require('path');
 
-import { v4 as generateId } from 'uuid';
+const { v4: uuid } = require('uuid');
 
-import { handleError } from '../lib/errorHandler.js';
+const { handleError } = require('../lib/errorHandler');
 
-const contactsPath = path.resolve('db/contacts.json');
+const contactsPath = path.resolve('model/contacts.json');
 
 // console.log(`path to contacts.json: ${contactsPath}`);
 
@@ -21,28 +21,28 @@ async function readContacts() {
   }
 }
 
-export async function listContacts() {
+async function listContacts() {
   try {
     const contacts = await readContacts();
-    console.table(contacts);
+    return contacts;
   } catch (error) {
     handleError(error);
   }
 }
 
-export async function getContactById(contactId) {
+async function getContactById(contactId) {
   try {
     const contacts = await readContacts();
     const requiredContact = contacts.filter(
-      contact => contact.id === contactId,
+      contact => contact.id === +contactId,
     );
-    console.table(requiredContact);
+    return requiredContact;
   } catch (error) {
     handleError(error);
   }
 }
 
-export async function removeContact(contactId) {
+async function removeContact(contactId) {
   try {
     const contacts = await readContacts();
     if (contacts.find(contact => contact.id === contactId)) {
@@ -62,7 +62,7 @@ export async function removeContact(contactId) {
   }
 }
 
-export async function addContact(name, email, phone) {
+async function addContact(name, email, phone) {
   try {
     const contacts = await readContacts();
     const newContact = { id: generateId(), name, email, phone };
@@ -74,3 +74,10 @@ export async function addContact(name, email, phone) {
     handleError(error);
   }
 }
+
+module.exports = {
+  listContacts,
+  getContactById,
+  removeContact,
+  addContact,
+};
