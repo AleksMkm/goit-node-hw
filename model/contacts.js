@@ -22,13 +22,17 @@ async function listContacts() {
 
 async function getContactById(contactId) {
   const contacts = await readContacts();
-  const requiredContact = contacts.filter(contact => contact.id === +contactId);
+  const [requiredContact] = contacts.filter(
+    contact => contact.id === +contactId,
+  );
   return requiredContact;
 }
 
 async function removeContact(contactId) {
   const contacts = await readContacts();
-  const contactToDelete = contacts.filter(contact => contact.id === +contactId);
+  const [contactToDelete] = contacts.filter(
+    contact => contact.id === +contactId,
+  );
   const updatedContactList = contacts.filter(
     contact => contact.id !== +contactId,
   );
@@ -44,9 +48,24 @@ async function addContact({ name, email, phone }) {
   return newContact;
 }
 
+async function updateContact(contactId, reqBody) {
+  const contacts = await readContacts();
+  const [contactToUpdate] = contacts.filter(
+    contact => contact.id === +contactId,
+  );
+  for (const key in contactToUpdate) {
+    if (Object.prototype.hasOwnProperty.call(reqBody, key)) {
+      contactToUpdate[key] = reqBody[key];
+    }
+  }
+  await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
+  return contactToUpdate;
+}
+
 module.exports = {
   listContacts,
   getContactById,
   removeContact,
   addContact,
+  updateContact,
 };

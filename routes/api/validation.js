@@ -6,15 +6,23 @@ const schemaCreateContact = Joi.object({
   phone: Joi.number().required(),
 });
 
-// const schemaUpdateCat = Joi.object({
-//   name: Joi.string().alphanum().min(3).max(30).optional(),
-//   age: Joi.number().integer().min(1).max(45).optional(),
-//   isVaccinated: Joi.boolean().optional(),
-// });
-
-// const schemaUpdateStatusCat = Joi.object({
-//   isVaccinated: Joi.boolean().required(),
-// });
+const schemaUpdateContactField = Joi.alternatives().try(
+  Joi.object({
+    name: Joi.string().alphanum().min(3).max(30).required(),
+    email: Joi.string().email(),
+    phone: Joi.number(),
+  }),
+  Joi.object({
+    name: Joi.string().alphanum().min(3).max(30),
+    email: Joi.string().email().required(),
+    phone: Joi.number(),
+  }),
+  Joi.object({
+    name: Joi.string().alphanum().min(3).max(30),
+    email: Joi.string().email(),
+    phone: Joi.number().required(),
+  }),
+);
 
 const validate = (schema, obj, next) => {
   const { error } = schema.validate(obj);
@@ -28,14 +36,10 @@ const validate = (schema, obj, next) => {
   next();
 };
 
-module.exports.createContact = (req, res, next) => {
+module.exports.createContact = (req, _res, next) => {
   return validate(schemaCreateContact, req.body, next);
 };
 
-// module.exports.updateCat = (req, res, next) => {
-//   return validate(schemaUpdateCat, req.body, next);
-// };
-
-// module.exports.updateStatusCat = (req, res, next) => {
-//   return validate(schemaUpdateStatusCat, req.body, next);
-// };
+module.exports.updateContactField = (req, _res, next) => {
+  return validate(schemaUpdateContactField, req.body, next);
+};
