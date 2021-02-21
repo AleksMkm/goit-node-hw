@@ -1,7 +1,7 @@
 const fs = require('fs/promises');
 const path = require('path');
 
-const { v4: uuid } = require('uuid');
+const { v4: generateId } = require('uuid');
 
 const { handleError } = require('../lib/errorHandler');
 
@@ -67,9 +67,12 @@ async function addContact(name, email, phone) {
     const contacts = await readContacts();
     const newContact = { id: generateId(), name, email, phone };
     const updatedContactList = [...contacts, newContact];
-    await fs.writeFile(contactsPath, JSON.stringify(updatedContactList));
+    await fs.writeFile(
+      contactsPath,
+      JSON.stringify(updatedContactList, null, 2),
+    );
     console.log(`contact ${name} was added succsessfully`);
-    listContacts();
+    return newContact;
   } catch (error) {
     handleError(error);
   }

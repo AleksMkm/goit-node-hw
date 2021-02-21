@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const Contacts = require('../../model/contacts');
+const validate = require('./validation');
 
 router.get('/', async (_req, res, next) => {
   try {
@@ -22,7 +23,7 @@ router.get('/:id', async (req, res, next) => {
   try {
     const [contact] = await Contacts.getContactById(req.params.id);
     if (contact) {
-      return res.json({
+      return res.status(200).json({
         status: 'success',
         code: 200,
         data: {
@@ -36,6 +37,21 @@ router.get('/:id', async (req, res, next) => {
         data: 'Not Found',
       });
     }
+  } catch (e) {
+    next(e);
+  }
+});
+
+router.post('/', validate.createContact, async (req, res, next) => {
+  try {
+    const contact = await Contacts.addContact(req.body);
+    return res.status(201).json({
+      status: 'success',
+      code: 201,
+      data: {
+        contact,
+      },
+    });
   } catch (e) {
     next(e);
   }
