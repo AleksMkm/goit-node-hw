@@ -3,7 +3,7 @@ import * as path from 'path';
 
 import { v4 as generateId } from 'uuid';
 
-import { handleError } from './lib/errorHandler.js';
+import { handleError } from '../lib/errorHandler.js';
 
 const contactsPath = path.resolve('db/contacts.json');
 

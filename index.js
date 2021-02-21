@@ -3,7 +3,7 @@ import {
   getContactById,
   removeContact,
   addContact,
-} from './contacts.js';
+} from './model/contacts.js';
 
 import { argv } from './lib/yargs.js';
 
