@@ -1,65 +1,32 @@
-const fs = require('fs/promises');
-const path = require('path');
-
-const { v4: generateId } = require('uuid');
-
-const contactsPath = path.resolve('model/contacts.json');
-
-// console.log(`path to contacts.json: ${contactsPath}`);
-
-const encoding = 'utf8';
-
-async function readContacts() {
-  const result = await fs.readFile(contactsPath, encoding);
-  const contacts = JSON.parse(result);
-  return contacts;
-}
+const Contact = require('./schemas/contact');
 
 async function listContacts() {
-  const contacts = await readContacts();
-  return contacts;
+  const results = await Contact.find({});
+  return results;
 }
 
 async function getContactById(contactId) {
-  const contacts = await readContacts();
-  const [requiredContact] = contacts.filter(
-    contact => contact.id === +contactId,
-  );
-  return requiredContact;
+  const result = await Contact.findOne({ _id: contactId });
+  return result;
+}
+
+async function addContact(body) {
+  const result = await Contact.create(body);
+  return result;
 }
 
 async function removeContact(contactId) {
-  const contacts = await readContacts();
-  const [contactToDelete] = contacts.filter(
-    contact => contact.id === +contactId,
-  );
-  const updatedContactList = contacts.filter(
-    contact => contact.id !== +contactId,
-  );
-  await fs.writeFile(contactsPath, JSON.stringify(updatedContactList, null, 2));
-  return contactToDelete;
-}
-
-async function addContact({ name, email, phone }) {
-  const contacts = await readContacts();
-  const newContact = { id: generateId(), name, email, phone };
-  const updatedContactList = [...contacts, newContact];
-  await fs.writeFile(contactsPath, JSON.stringify(updatedContactList, null, 2));
-  return newContact;
+  const result = await Contact.findByIdAndDelete({ _id: contactId });
+  return result;
 }
 
 async function updateContact(contactId, reqBody) {
-  const contacts = await readContacts();
-  const [contactToUpdate] = contacts.filter(
-    contact => contact.id === +contactId,
+  const result = await Contact.findByIdAndUpdate(
+    { _id: contactId },
+    { ...reqBody },
+    { new: true },
   );
-  for (const key in contactToUpdate) {
-    if (Object.prototype.hasOwnProperty.call(reqBody, key)) {
-      contactToUpdate[key] = reqBody[key];
-    }
-  }
-  await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
-  return contactToUpdate;
+  return result;
 }
 
 module.exports = {
