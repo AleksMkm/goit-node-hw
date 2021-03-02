@@ -5,6 +5,7 @@ const usersController = require('../../../controllers/users-controller');
 const validate = require('./validation');
 
 router.post('/signup', validate.createUser, usersController.create);
+router.post('/login', usersController.login);
 
 // router
 //   .get('/:id', contactsController.getById)

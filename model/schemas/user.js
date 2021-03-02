@@ -19,7 +19,7 @@ const userSchema = new Schema(
     subscription: {
       type: String,
       enum: [Subscription.FREE, Subscription.PRO, Subscription.PREMIUM],
-      default: 'free',
+      default: Subscription.FREE,
     },
     token: {
       type: String,
