@@ -6,7 +6,7 @@ const { HttpCode, Status } = require('../helpers/constants');
 
 const SECRET_KEY = process.env.JWT_SECRET;
 
-const create = async (req, res, next) => {
+async function create(req, res, next) {
   try {
     const { email } = req.body;
 
@@ -22,7 +22,7 @@ const create = async (req, res, next) => {
 
     const newUser = await Users.createUser(req.body);
     return res.status(HttpCode.CREATED).json({
-      status: 'success',
+      status: Status.SUCCESS,
       code: HttpCode.CREATED,
       data: {
         id: newUser.id,
@@ -32,9 +32,9 @@ const create = async (req, res, next) => {
   } catch (e) {
     next(e);
   }
-};
+}
 
-const login = async (req, res, next) => {
+async function login(req, res, next) {
   try {
     const { email, password } = req.body;
     const user = await Users.findByEmail(email);
@@ -63,9 +63,9 @@ const login = async (req, res, next) => {
   } catch (e) {
     next(e);
   }
-};
+}
 
-const logout = async (req, res, next) => {
+async function logout(req, res, next) {
   try {
     const id = req.user.id;
     await Users.updateToken(id, null);
@@ -73,10 +73,26 @@ const logout = async (req, res, next) => {
   } catch (e) {
     next(e);
   }
-};
+}
+
+async function current(req, res, next) {
+  try {
+    return res.status(HttpCode.OK).json({
+      status: Status.SUCCESS,
+      code: HttpCode.OK,
+      data: {
+        id: req.user.id,
+        email: req.user.email,
+      },
+    });
+  } catch (e) {
+    next(e);
+  }
+}
 
 module.exports = {
   create,
   login,
   logout,
+  current,
 };

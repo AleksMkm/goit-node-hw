@@ -8,5 +8,6 @@ const validate = require('./validation');
 router.post('/signup', validate.createUser, usersController.create);
 router.post('/login', usersController.login);
 router.post('/logout', guard, usersController.logout);
+router.get('/current', guard, usersController.current);
 
 module.exports = router;

@@ -4,6 +4,7 @@ const cors = require('cors');
 
 const contactsRouter = require('./routes/api/contacts/');
 const authRouter = require('./routes/api/users');
+const { HttpCode, Status } = require('./helpers/constants');
 
 const app = express();
 
@@ -21,7 +22,11 @@ app.use((_req, res) => {
 });
 
 app.use((err, _req, res, _next) => {
-  res.status(err.status || 500).json({ message: err.message });
+  res.status(err.status || HttpCode.INTERNAL_SERVER_ERROR).json({
+    status: Status.ERROR,
+    code: err.status || HttpCode.INTERNAL_SERVER_ERROR,
+    message: err.message,
+  });
 });
 
 module.exports = app;
