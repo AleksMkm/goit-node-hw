@@ -1,11 +1,11 @@
 const Contacts = require('../model/contacts');
-const { HttpCode } = require('../helpers/constants');
+const { HttpCode, Status } = require('../helpers/constants');
 
 const getAll = async (_req, res, next) => {
   try {
     const contacts = await Contacts.listContacts();
     return res.status(HttpCode.OK).json({
-      status: 'success',
+      status: Status.SUCCESS,
       code: HttpCode.OK,
       data: {
         contacts,
@@ -21,7 +21,7 @@ const getById = async (req, res, next) => {
     const contact = await Contacts.getContactById(req.params.id);
     if (contact) {
       return res.status(HttpCode.OK).json({
-        status: 'success',
+        status: Status.SUCCESS,
         code: HttpCode.OK,
         data: {
           contact,
@@ -29,7 +29,7 @@ const getById = async (req, res, next) => {
       });
     } else {
       return res.status(HttpCode.NOT_FOUND).json({
-        status: 'error',
+        status: Status.ERROR,
         code: HttpCode.NOT_FOUND,
         data: 'Not Found',
       });
@@ -43,7 +43,7 @@ const create = async (req, res, next) => {
   try {
     const contact = await Contacts.addContact(req.body);
     return res.status(HttpCode.CREATED).json({
-      status: 'success',
+      status: Status.SUCCESS,
       code: HttpCode.CREATED,
       data: {
         contact,
@@ -59,7 +59,7 @@ const remove = async (req, res, next) => {
     const contact = await Contacts.removeContact(req.params.id);
     if (contact) {
       return res.status(HttpCode.OK).json({
-        status: 'success',
+        status: Status.SUCCESS,
         code: HttpCode.OK,
         data: {
           contact,
@@ -67,7 +67,7 @@ const remove = async (req, res, next) => {
       });
     } else {
       return res.status(HttpCode.NOT_FOUND).json({
-        status: 'error',
+        status: Status.ERROR,
         code: HttpCode.NOT_FOUND,
         data: 'Not Found',
       });
@@ -82,7 +82,7 @@ const update = async (req, res, next) => {
     const contact = await Contacts.updateContact(req.params.id, req.body);
     if (contact) {
       return res.status(HttpCode.OK).json({
-        status: 'success',
+        status: Status.SUCCESS,
         code: HttpCode.OK,
         data: {
           contact,
@@ -90,7 +90,7 @@ const update = async (req, res, next) => {
       });
     } else {
       return res.status(HttpCode.NOT_FOUND).json({
-        status: 'error',
+        status: Status.ERROR,
         code: HttpCode.NOT_FOUND,
         data: 'Not Found',
       });

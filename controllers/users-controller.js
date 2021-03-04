@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const Users = require('../model/users');
-const { HttpCode } = require('../helpers/constants');
+const { HttpCode, Status } = require('../helpers/constants');
 
 const SECRET_KEY = process.env.JWT_SECRET;
 
@@ -13,7 +13,7 @@ const create = async (req, res, next) => {
     const user = await Users.findByEmail(email);
     if (user) {
       return res.status(HttpCode.CONFLICT).json({
-        status: 'error',
+        status: Status.ERROR,
         code: HttpCode.CONFLICT,
         data: 'Conflict',
         message: 'Email is already use',
@@ -42,7 +42,7 @@ const login = async (req, res, next) => {
 
     if (!user || !isPasswordValid) {
       return res.status(HttpCode.UNAUTHORIZED).json({
-        status: 'error',
+        status: Status.ERROR,
         code: HttpCode.UNAUTHORIZED,
         data: 'UNAUTHORIZED',
         message: 'Invalid credentials',
@@ -54,7 +54,7 @@ const login = async (req, res, next) => {
     const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '2h' });
     await Users.updateToken(id, token);
     return res.status(HttpCode.OK).json({
-      status: 'success',
+      status: Status.SUCCESS,
       code: HttpCode.OK,
       data: {
         token,
@@ -65,7 +65,18 @@ const login = async (req, res, next) => {
   }
 };
 
+const logout = async (req, res, next) => {
+  try {
+    const id = req.user.id;
+    await Users.updateToken(id, null);
+    return res.status(HttpCode.NO_CONTENT).json({});
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   create,
   login,
+  logout,
 };

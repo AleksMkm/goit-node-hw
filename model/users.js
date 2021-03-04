@@ -10,6 +10,11 @@ async function findByEmail(email) {
   return user;
 }
 
+async function findById(id) {
+  const user = await User.findOne({ _id: id });
+  return user;
+}
+
 const updateToken = async (id, token) => {
   return await User.updateOne({ _id: id }, { token });
 };
@@ -18,4 +23,5 @@ module.exports = {
   createUser,
   findByEmail,
   updateToken,
+  findById,
 };
