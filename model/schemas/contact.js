@@ -1,6 +1,8 @@
 const { Schema, model, SchemaTypes } = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 
+const { ContactType } = require('../../helpers/constants');
+
 const contactSchema = new Schema(
   {
     name: {
@@ -15,6 +17,14 @@ const contactSchema = new Schema(
     phone: {
       type: Number,
       required: [true, 'Enter phone for a contact'],
+    },
+    category: {
+      type: String,
+      enum: {
+        values: [ContactType.FRIEND, ContactType.WORK, ContactType.OTHER],
+        message: "It isn't allowed",
+      },
+      default: ContactType.OTHER,
     },
     owner: {
       type: SchemaTypes.ObjectId,

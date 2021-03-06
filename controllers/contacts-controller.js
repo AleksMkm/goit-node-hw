@@ -5,7 +5,7 @@ const { HttpCode, Status } = require('../helpers/constants');
 async function getAll(req, res, next) {
   try {
     const userId = req.user.id;
-    console.log(userId);
+
     const contacts = await Contacts.listContacts(userId, req.query);
     return res.status(HttpCode.OK).json({
       status: Status.SUCCESS,
@@ -86,11 +86,13 @@ async function remove(req, res, next) {
 async function update(req, res, next) {
   try {
     const userId = req.user.id;
+
     const contact = await Contacts.updateContact(
       req.params.id,
       req.body,
       userId,
     );
+
     if (contact) {
       return res.status(HttpCode.OK).json({
         status: Status.SUCCESS,

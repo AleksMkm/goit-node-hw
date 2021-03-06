@@ -15,9 +15,9 @@ async function findById(id) {
   return user;
 }
 
-const updateToken = async (id, token) => {
+async function updateToken(id, token) {
   return await User.updateOne({ _id: id }, { token });
-};
+}
 
 module.exports = {
   createUser,

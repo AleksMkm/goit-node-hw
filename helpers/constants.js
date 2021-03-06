@@ -21,8 +21,15 @@ const Status = {
   ERROR: 'error',
 };
 
+const ContactType = {
+  FRIEND: 'friend',
+  WORK: 'work',
+  OTHER: 'other',
+};
+
 module.exports = {
   Subscription,
   HttpCode,
   Status,
+  ContactType,
 };

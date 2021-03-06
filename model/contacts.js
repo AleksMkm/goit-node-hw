@@ -2,10 +2,11 @@ const Contact = require('./schemas/contact');
 
 async function listContacts(
   userId,
-  { sortBy, sortByDesc, filter, limit = '5', page = '1' },
+  { sortBy, cat, sortByDesc, filter, limit = '5', page = '1' },
 ) {
+  console.log(cat);
   const results = await Contact.paginate(
-    { owner: userId },
+    { owner: userId, category: cat },
     {
       limit,
       page,
