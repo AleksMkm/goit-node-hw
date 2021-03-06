@@ -1,11 +1,28 @@
 const Contact = require('./schemas/contact');
 
-async function listContacts(userId) {
-  const results = await Contact.find({ owner: userId }).populate({
-    path: 'owner',
-    select: 'email -_id',
-  });
-  return results;
+async function listContacts(
+  userId,
+  { sortBy, sortByDesc, filter, limit = '5', page = '1' },
+) {
+  const results = await Contact.paginate(
+    { owner: userId },
+    {
+      limit,
+      page,
+      sort: {
+        ...(sortBy ? { [`${sortBy}`]: 1 } : {}),
+        ...(sortByDesc ? { [`${sortByDesc}`]: -1 } : {}),
+      },
+      select: filter ? filter.split('|').join(' ') : '',
+      populate: {
+        path: 'owner',
+        select: 'email -_id',
+      },
+    },
+  );
+
+  const { docs: contacts, totalDocs: total } = results;
+  return { total: total.toString(), limit, page, contacts };
 }
 
 async function getContactById(contactId, userId) {

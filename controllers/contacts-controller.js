@@ -1,11 +1,12 @@
 const Contacts = require('../model/contacts');
+
 const { HttpCode, Status } = require('../helpers/constants');
 
-const getAll = async (req, res, next) => {
+async function getAll(req, res, next) {
   try {
     const userId = req.user.id;
     console.log(userId);
-    const contacts = await Contacts.listContacts(userId);
+    const contacts = await Contacts.listContacts(userId, req.query);
     return res.status(HttpCode.OK).json({
       status: Status.SUCCESS,
       code: HttpCode.OK,
@@ -16,9 +17,9 @@ const getAll = async (req, res, next) => {
   } catch (e) {
     next(e);
   }
-};
+}
 
-const getById = async (req, res, next) => {
+async function getById(req, res, next) {
   try {
     const userId = req.user.id;
     const contact = await Contacts.getContactById(req.params.id, userId);
@@ -40,9 +41,9 @@ const getById = async (req, res, next) => {
   } catch (e) {
     next(e);
   }
-};
+}
 
-const create = async (req, res, next) => {
+async function create(req, res, next) {
   try {
     const userId = req.user.id;
     const contact = await Contacts.addContact({ ...req.body, owner: userId });
@@ -56,9 +57,9 @@ const create = async (req, res, next) => {
   } catch (e) {
     next(e);
   }
-};
+}
 
-const remove = async (req, res, next) => {
+async function remove(req, res, next) {
   try {
     const userId = req.user.id;
     const contact = await Contacts.removeContact(req.params.id, userId);
@@ -80,9 +81,9 @@ const remove = async (req, res, next) => {
   } catch (e) {
     next(e);
   }
-};
+}
 
-const update = async (req, res, next) => {
+async function update(req, res, next) {
   try {
     const userId = req.user.id;
     const contact = await Contacts.updateContact(
@@ -108,7 +109,7 @@ const update = async (req, res, next) => {
   } catch (e) {
     next(e);
   }
-};
+}
 
 module.exports = {
   getAll,
