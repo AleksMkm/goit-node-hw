@@ -27,6 +27,7 @@ async function create(req, res, next) {
       data: {
         id: newUser.id,
         email: newUser.email,
+        subscription: newUser.subscription,
       },
     });
   } catch (e) {
@@ -83,6 +84,27 @@ async function current(req, res, next) {
       data: {
         id: req.user.id,
         email: req.user.email,
+        subscription: req.user.subscription,
+      },
+    });
+  } catch (e) {
+    next(e);
+  }
+}
+
+async function updateSubscription(req, res, next) {
+  try {
+    const id = req.user.id;
+    const subscription = req.body.subscription;
+    await Users.updateSubscription(id, subscription);
+
+    return res.status(HttpCode.OK).json({
+      status: Status.SUCCESS,
+      code: HttpCode.OK,
+      data: {
+        id: req.user.id,
+        email: req.user.email,
+        subscription,
       },
     });
   } catch (e) {
@@ -95,4 +117,5 @@ module.exports = {
   login,
   logout,
   current,
+  updateSubscription,
 };

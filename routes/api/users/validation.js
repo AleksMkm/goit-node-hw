@@ -1,5 +1,5 @@
 const Joi = require('joi');
-const { HttpCode } = require('../../../helpers/constants');
+const { HttpCode, Subscription } = require('../../../helpers/constants');
 
 const schemaCreateUser = Joi.object({
   email: Joi.string()
@@ -7,6 +7,14 @@ const schemaCreateUser = Joi.object({
     .pattern(/\S+@\S+\.\S+/)
     .required(),
   password: Joi.string().required(),
+});
+
+const schemaUpdateSubscription = Joi.object({
+  subscription: Joi.string().valid(
+    Subscription.FREE,
+    Subscription.PREMIUM,
+    Subscription.PRO,
+  ),
 });
 
 const validate = (schema, obj, next) => {
@@ -23,4 +31,8 @@ const validate = (schema, obj, next) => {
 
 module.exports.createUser = (req, _res, next) => {
   return validate(schemaCreateUser, req.body, next);
+};
+
+module.exports.updateSubscription = (req, _res, next) => {
+  return validate(schemaUpdateSubscription, req.body, next);
 };
