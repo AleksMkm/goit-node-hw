@@ -1,12 +1,39 @@
 const Contact = require('./schemas/contact');
 
-async function listContacts() {
-  const results = await Contact.find({});
-  return results;
+async function listContacts(
+  userId,
+  { sortBy, cat, sortByDesc, filter, limit = '5', page = '1' },
+) {
+  console.log(cat);
+  const results = await Contact.paginate(
+    { owner: userId, category: cat },
+    {
+      limit,
+      page,
+      sort: {
+        ...(sortBy ? { [`${sortBy}`]: 1 } : {}),
+        ...(sortByDesc ? { [`${sortByDesc}`]: -1 } : {}),
+      },
+      select: filter ? filter.split('|').join(' ') : '',
+      populate: {
+        path: 'owner',
+        select: 'email -_id',
+      },
+    },
+  );
+
+  const { docs: contacts, totalDocs: total } = results;
+  return { total: total.toString(), limit, page, contacts };
 }
 
-async function getContactById(contactId) {
-  const result = await Contact.findOne({ _id: contactId });
+async function getContactById(contactId, userId) {
+  const result = await Contact.findOne({
+    _id: contactId,
+    owner: userId,
+  }).populate({
+    path: 'owner',
+    select: 'email -_id',
+  });
   return result;
 }
 
@@ -15,17 +42,26 @@ async function addContact(body) {
   return result;
 }
 
-async function removeContact(contactId) {
-  const result = await Contact.findByIdAndDelete({ _id: contactId });
+async function removeContact(contactId, userId) {
+  const result = await Contact.findByIdAndDelete({
+    _id: contactId,
+    owner: userId,
+  }).populate({
+    path: 'owner',
+    select: 'email -_id',
+  });
   return result;
 }
 
-async function updateContact(contactId, reqBody) {
+async function updateContact(contactId, reqBody, userId) {
   const result = await Contact.findByIdAndUpdate(
-    { _id: contactId },
+    { _id: contactId, owner: userId },
     { ...reqBody },
     { new: true },
-  );
+  ).populate({
+    path: 'owner',
+    select: 'email -_id',
+  });
   return result;
 }
 
