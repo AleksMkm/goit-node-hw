@@ -16,6 +16,7 @@ const guard = (req, res, next) => {
     }
 
     req.user = user;
+    console.log(req.user);
     return next();
   })(req, res, next);
 };

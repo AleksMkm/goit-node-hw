@@ -7,6 +7,7 @@ const db = require('../model/db');
 const { createFolterIfItDoesntExist } = require('../helpers/create-folder');
 
 const PORT = process.env.PORT || 3000;
+console.log(PORT);
 
 db.then(() => {
   app.listen(PORT, async () => {

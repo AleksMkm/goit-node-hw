@@ -3,6 +3,10 @@ require('dotenv').config();
 
 const Users = require('../model/users');
 const { HttpCode, Status } = require('../helpers/constants');
+const {
+  downloadAvatarFromUrl,
+  saveAvatarToStatic,
+} = require('../helpers/avatar-handler');
 
 const SECRET_KEY = process.env.JWT_SECRET;
 
@@ -21,6 +25,10 @@ async function create(req, res, next) {
     }
 
     const newUser = await Users.createUser(req.body);
+    await downloadAvatarFromUrl(newUser);
+    const newAvatarUrl = await saveAvatarToStatic(newUser);
+    await Users.updateAvatarUrl(newUser.id, newAvatarUrl);
+
     return res.status(HttpCode.CREATED).json({
       status: Status.SUCCESS,
       code: HttpCode.CREATED,
@@ -28,6 +36,7 @@ async function create(req, res, next) {
         id: newUser.id,
         email: newUser.email,
         subscription: newUser.subscription,
+        avatar: newAvatarUrl,
       },
     });
   } catch (e) {
@@ -85,6 +94,7 @@ async function current(req, res, next) {
         id: req.user.id,
         email: req.user.email,
         subscription: req.user.subscription,
+        avatar: req.user.avatarURL,
       },
     });
   } catch (e) {

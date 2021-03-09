@@ -23,10 +23,16 @@ async function updateSubscription(id, subscription) {
   return await User.updateOne({ _id: id }, { subscription });
 }
 
+async function updateAvatarUrl(id, url) {
+  console.log();
+  return await User.updateOne({ _id: id }, { avatarURL: url });
+}
+
 module.exports = {
   createUser,
   findByEmail,
   updateToken,
   findById,
   updateSubscription,
+  updateAvatarUrl,
 };
