@@ -24,7 +24,6 @@ async function updateSubscription(id, subscription) {
 }
 
 async function updateAvatarUrl(id, url) {
-  console.log();
   return await User.updateOne({ _id: id }, { avatarURL: url });
 }
 
