@@ -107,6 +107,25 @@ describe('Testing the route api/users', () => {
       expect(res.body).toBeDefined();
       done();
     });
+    test("negative: other user's token: should return code 403", async done => {
+      const res = await request(app)
+        .get(`/api/auth/current`)
+        .set(
+          'Authorization',
+          `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwNDEyYzY4NGQ4YzQxYWU3NGQxYmVkOCIsImlhdCI6MTYxNTA0OTY0NywiZXhwIjoxNjE1MDU2ODQ3fQ.aK2jpfcjIJgU12SgO462fecQhAkUoivf1RJwm4d9BDc`,
+        );
+      expect(res.status).toEqual(403);
+      expect(res.body).toBeDefined();
+      done();
+    });
+    test('negative: no token: should return code 403', async done => {
+      const res = await request(app)
+        .get(`/api/auth/current`)
+        .set('Authorization', `Bearer ${null}`);
+      expect(res.status).toEqual(403);
+      expect(res.body).toBeDefined();
+      done();
+    });
   });
   describe('Testing api/users: change avatar', () => {
     test('positive: file attached: should return code 200', async done => {
@@ -129,13 +148,13 @@ describe('Testing the route api/users', () => {
       expect(res.body).toBeDefined();
       done();
     });
-    test('negative: wrong token: should return code 403', async done => {
-      const buffer = await fs.readFile('./test/default-avatar.png');
+    test('negative: wrong MIME-type file attached: should return code 400', async done => {
+      const buffer = await fs.readFile('./test/word.docx');
       const res = await request(app)
         .patch(`/api/auth/avatar`)
-        .set('Authorization', `Bearer ${fakeToken}`)
-        .attach('avatar', buffer, 'default-avatar.png');
-      expect(res.status).toEqual(403);
+        .set('Authorization', `Bearer ${token}`)
+        .attach('avatar', buffer, 'word.docx');
+      expect(res.status).toEqual(400);
       expect(res.body).toBeDefined();
       done();
     });
@@ -150,21 +169,12 @@ describe('Testing the route api/users', () => {
       expect(res.body).toBeDefined();
       done();
     });
-    test('negative: incorrect subscriptyion type: should return code 400', async done => {
+    test('negative: incorrect subscription type: should return code 400', async done => {
       const res = await request(app)
         .patch(`/api/auth/sub`)
         .send({ subscription: 'somethingIncorrect' })
         .set('Authorization', `Bearer ${token}`);
       expect(res.status).toEqual(400);
-      expect(res.body).toBeDefined();
-      done();
-    });
-    test('negative: incorrect token: should return code 403', async done => {
-      const res = await request(app)
-        .patch(`/api/auth/sub`)
-        .send({ subscription: 'pro' })
-        .set('Authorization', `Bearer ${fakeToken}`);
-      expect(res.status).toEqual(403);
       expect(res.body).toBeDefined();
       done();
     });
@@ -175,14 +185,6 @@ describe('Testing the route api/users', () => {
         .post(`/api/auth/logout`)
         .set('Authorization', `Bearer ${token}`);
       expect(res.status).toEqual(204);
-      expect(res.body).toBeDefined();
-      done();
-    });
-    test('negative: incorrect token: should return code 403', async done => {
-      const res = await request(app)
-        .post(`/api/auth/logout`)
-        .set('Authorization', `Bearer ${fakeToken}`);
-      expect(res.status).toEqual(403);
       expect(res.body).toBeDefined();
       done();
     });

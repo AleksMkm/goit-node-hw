@@ -23,7 +23,6 @@ const contacts = [
 
 const newContact = {
   name: 'New',
-  category: 'friend',
   email: 'newmail@friends.com',
   phone: 123456789,
 };

@@ -10,9 +10,7 @@ async function getAll(req, res, next) {
     return res.status(HttpCode.OK).json({
       status: Status.SUCCESS,
       code: HttpCode.OK,
-      data: {
-        contacts,
-      },
+      data: contacts,
     });
   } catch (e) {
     next(e);
