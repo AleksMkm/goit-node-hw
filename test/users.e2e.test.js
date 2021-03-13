@@ -169,5 +169,22 @@ describe('Testing the route api/users', () => {
       done();
     });
   });
-  //   describe('Testing api/users: logout', () => {});
+  describe('Testing api/users: logout', () => {
+    test('positive: correct token: should return code 204', async done => {
+      const res = await request(app)
+        .post(`/api/auth/logout`)
+        .set('Authorization', `Bearer ${token}`);
+      expect(res.status).toEqual(204);
+      expect(res.body).toBeDefined();
+      done();
+    });
+    test('negative: incorrect token: should return code 403', async done => {
+      const res = await request(app)
+        .post(`/api/auth/logout`)
+        .set('Authorization', `Bearer ${fakeToken}`);
+      expect(res.status).toEqual(403);
+      expect(res.body).toBeDefined();
+      done();
+    });
+  });
 });
