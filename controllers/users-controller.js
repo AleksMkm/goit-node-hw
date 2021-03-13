@@ -16,6 +16,7 @@ async function create(req, res, next) {
     const { email } = req.body;
 
     const user = await Users.findByEmail(email);
+
     if (user) {
       return res.status(HttpCode.CONFLICT).json({
         status: Status.ERROR,

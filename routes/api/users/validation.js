@@ -14,11 +14,9 @@ const schemaCreateUser = Joi.object({
 });
 
 const schemaUpdateSubscription = Joi.object({
-  subscription: Joi.string().valid(
-    Subscription.FREE,
-    Subscription.PREMIUM,
-    Subscription.PRO,
-  ),
+  subscription: Joi.string()
+    .valid(Subscription.FREE, Subscription.PREMIUM, Subscription.PRO)
+    .required(),
 });
 
 function validate(schema, obj, next) {
