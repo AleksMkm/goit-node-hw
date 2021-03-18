@@ -37,11 +37,16 @@ const User = {
   avatarURL: '604a7a0b42b389409451038f\\1615493706858-avatar.png',
   createdAt: '2021-03-11T20:14:03.746Z',
   updatedAt: '2021-03-11T20:15:07.047Z',
+  verificationToken: null,
+  verified: true,
 };
 
 const users = [];
 users[0] = User;
 
-const newUser = { email: 'test@test.com', password: '123456' };
+const newUser = {
+  email: 'test@test.com',
+  password: '123456',
+};
 
 module.exports = { contacts, newContact, User, users, newUser };

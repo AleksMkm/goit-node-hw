@@ -19,6 +19,7 @@ User.token = token;
 jest.mock('../model/contacts.js');
 jest.mock('../model/users.js');
 jest.mock('../helpers/avatar-handler.js');
+jest.mock('../services/email-verification.js');
 
 describe('Testing the route api/contacts', () => {
   describe('Testing api/contacts: get all contacts', () => {
@@ -32,11 +33,11 @@ describe('Testing the route api/contacts', () => {
       expect(res.body.data.contacts).toBeInstanceOf(Array);
       done();
     });
-    test('negative: wrong token: should return code 403', async done => {
+    test('negative: wrong token: should return code 401', async done => {
       const res = await request(app)
         .get(`/api/contacts`)
         .set('Authorization', `Bearer ${fakeToken}`);
-      expect(res.status).toEqual(403);
+      expect(res.status).toEqual(401);
       expect(res.body).toBeDefined();
       done();
     });

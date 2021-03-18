@@ -182,8 +182,6 @@ async function verifyEmail(req, res, next) {
       req.params.verificationToken,
     );
 
-    console.log(user);
-
     if (user) {
       await Users.updateVerificationToken(user._id, true, null);
 
