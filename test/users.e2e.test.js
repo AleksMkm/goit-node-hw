@@ -1,9 +1,10 @@
 const request = require('supertest');
 const jwt = require('jsonwebtoken');
 const fs = require('fs/promises');
+const { v4: uuid } = require('uuid');
 require('dotenv').config();
 
-const { User, newUser } = require('../model/__mocks__/data');
+const { User, newUser, users } = require('../model/__mocks__/data');
 const app = require('../app');
 
 const SECRET_KEY = process.env.JWT_SECRET;
@@ -15,11 +16,15 @@ function issueToken(payload, secret) {
 const token = issueToken({ id: User._id }, SECRET_KEY);
 const fakeToken = 'thisIsDefinetelyNotAValidToken';
 
+const verificationToken = uuid();
+const fakeVerificationToken = 'thisIsDefinetelyNotAValidToken';
+
 User.token = token;
 
 jest.mock('../model/contacts.js');
 jest.mock('../model/users.js');
 jest.mock('../helpers/avatar-handler.js');
+jest.mock('../services/email-verification.js');
 
 describe('Testing the route api/users', () => {
   describe('Testing api/users: signup', () => {
@@ -61,8 +66,41 @@ describe('Testing the route api/users', () => {
       done();
     });
   });
+  describe('Testing api/users: verification', () => {
+    test('positive: successful verification: should return code 200', async done => {
+      const user = users[1];
+      user.verificationToken = verificationToken;
+      const res = await request(app)
+        .get(`/api/auth/verify/${verificationToken}`)
+        .set('Accept', 'application/json');
+      expect(res.status).toEqual(200);
+      expect(res.body).toBeDefined();
+      done();
+    });
+    test('negative: incorrect token: should return code 400', async done => {
+      const res = await request(app)
+        .get(`/api/auth/verify/${fakeVerificationToken}`)
+        .set('Accept', 'application/json');
+      expect(res.status).toEqual(400);
+      expect(res.body).toBeDefined();
+      done();
+    });
+  });
   describe('Testing api/users: login', () => {
+    test('negative: not verified: should return code 401', async done => {
+      const user = users[1];
+      user.verified = false;
+      const res = await request(app)
+        .post(`/api/auth/login`)
+        .send(newUser)
+        .set('Accept', 'application/json');
+      expect(res.status).toEqual(401);
+      expect(res.body).toBeDefined();
+      done();
+    });
     test('positive: successful login: should return code 200', async done => {
+      const user = users[1];
+      user.verified = true;
       const res = await request(app)
         .post(`/api/auth/login`)
         .send(newUser)
@@ -103,7 +141,7 @@ describe('Testing the route api/users', () => {
       const res = await request(app)
         .get(`/api/auth/current`)
         .set('Authorization', `Bearer ${fakeToken}`);
-      expect(res.status).toEqual(403);
+      expect(res.status).toEqual(401);
       expect(res.body).toBeDefined();
       done();
     });
@@ -114,7 +152,7 @@ describe('Testing the route api/users', () => {
           'Authorization',
           `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwNDEyYzY4NGQ4YzQxYWU3NGQxYmVkOCIsImlhdCI6MTYxNTA0OTY0NywiZXhwIjoxNjE1MDU2ODQ3fQ.aK2jpfcjIJgU12SgO462fecQhAkUoivf1RJwm4d9BDc`,
         );
-      expect(res.status).toEqual(403);
+      expect(res.status).toEqual(401);
       expect(res.body).toBeDefined();
       done();
     });
@@ -122,7 +160,7 @@ describe('Testing the route api/users', () => {
       const res = await request(app)
         .get(`/api/auth/current`)
         .set('Authorization', `Bearer ${null}`);
-      expect(res.status).toEqual(403);
+      expect(res.status).toEqual(401);
       expect(res.body).toBeDefined();
       done();
     });

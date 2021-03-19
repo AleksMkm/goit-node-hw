@@ -14,7 +14,7 @@ const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short';
 const PUBLIC_DIR = process.env.PUBLIC_DIR;
 
 app.use(express.static(path.join(__dirname, PUBLIC_DIR)));
-app.use(logger(formatsLogger));
+app.get('env') !== 'test' && app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json());
 

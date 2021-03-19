@@ -1,18 +1,15 @@
 const User = require('./schemas/user');
 
 async function createUser(body) {
-  const user = await User.create(body);
-  return user;
+  return await User.create(body);
 }
 
 async function findByEmail(email) {
-  const user = await User.findOne({ email });
-  return user;
+  return await User.findOne({ email });
 }
 
 async function findById(id) {
-  const user = await User.findOne({ _id: id });
-  return user;
+  return await User.findOne({ _id: id });
 }
 
 async function updateToken(id, token) {
@@ -27,6 +24,17 @@ async function updateAvatarUrl(id, url) {
   return await User.updateOne({ _id: id }, { avatarURL: url });
 }
 
+async function findUserByVerificationToken(verificationToken) {
+  return await User.findOne({ verificationToken });
+}
+
+async function updateVerificationToken(id, verified, verificationToken) {
+  return await User.findOneAndUpdate(
+    { _id: id },
+    { verified, verificationToken },
+  );
+}
+
 module.exports = {
   createUser,
   findByEmail,
@@ -34,4 +42,6 @@ module.exports = {
   findById,
   updateSubscription,
   updateAvatarUrl,
+  findUserByVerificationToken,
+  updateVerificationToken,
 };

@@ -1,4 +1,5 @@
 module.exports = {
+  parser: '@babel/eslint-parser',
   env: {
     commonjs: true,
     es2021: true,
@@ -8,8 +9,16 @@ module.exports = {
 
   plugins: ['jest'],
 
-  extends: ['standard', 'plugin:json/recommended', 'prettier'],
+  extends: [
+    'standard',
+    'plugin:json/recommended',
+    'plugin:json/recommended',
+    'prettier',
+  ],
   parserOptions: {
-    ecmaVersion: 12,
+    ecmaVersion: 2021,
+  },
+  rules: {
+    'jest/no-mocks-import': 'off',
   },
 };
