@@ -56,10 +56,14 @@ async function create(req, res, next) {
       status: Status.SUCCESS,
       code: HttpCode.CREATED,
       data: {
-        id: newUser.id,
-        email: newUser.email,
-        subscription: newUser.subscription,
-        avatar: newAvatarUrl,
+        user: {
+          name: newUser.name,
+          id: newUser.id,
+          email: newUser.email,
+          subscription: newUser.subscription,
+          avatar: newAvatarUrl,
+          verified: newUser.verified,
+        },
       },
     });
   } catch (e) {
