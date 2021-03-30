@@ -71,6 +71,36 @@ async function create(req, res, next) {
   }
 }
 
+async function verifyEmail(req, res, next) {
+  try {
+    const user = await Users.findUserByVerificationToken(
+      req.params.verificationToken,
+    );
+
+    if (user) {
+      await Users.updateVerificationToken(user._id, true, null);
+      const verifiedUser = await Users.findByEmail(user.email);
+
+      return res.status(HttpCode.OK).json({
+        status: Status.SUCCESS,
+        code: HttpCode.OK,
+        data: {
+          user: verifiedUser,
+        },
+      });
+    }
+
+    return res.status(HttpCode.BAD_REQUEST).json({
+      status: Status.ERROR,
+      code: HttpCode.BAD_REQUEST,
+      data: 'Bad request',
+      message: 'Link is not valid',
+    });
+  } catch (e) {
+    next(e);
+  }
+}
+
 async function login(req, res, next) {
   try {
     const { email, password } = req.body;
@@ -174,33 +204,6 @@ async function updateAvatar(req, res, next) {
       status: Status.SUCCESS,
       code: HttpCode.OK,
       data: { newAvatarUrl },
-    });
-  } catch (e) {
-    next(e);
-  }
-}
-
-async function verifyEmail(req, res, next) {
-  try {
-    const user = await Users.findUserByVerificationToken(
-      req.params.verificationToken,
-    );
-
-    if (user) {
-      await Users.updateVerificationToken(user._id, true, null);
-
-      return res.status(HttpCode.OK).json({
-        status: Status.SUCCESS,
-        code: HttpCode.OK,
-        message: 'Verification succsessful',
-      });
-    }
-
-    return res.status(HttpCode.BAD_REQUEST).json({
-      status: Status.ERROR,
-      code: HttpCode.BAD_REQUEST,
-      data: 'Bad request',
-      message: 'Link is not valid',
     });
   } catch (e) {
     next(e);
