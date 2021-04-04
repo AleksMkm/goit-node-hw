@@ -103,6 +103,7 @@ async function verifyEmail(req, res, next) {
 
 async function login(req, res, next) {
   try {
+    console.log(req.body);
     const { email, password } = req.body;
     const user = await Users.findByEmail(email);
     const isPasswordValid = await user?.validPassword(password);
@@ -133,6 +134,14 @@ async function login(req, res, next) {
       status: Status.SUCCESS,
       code: HttpCode.OK,
       data: {
+        user: {
+          name: user.name,
+          id: user.id,
+          email: user.email,
+          subscription: user.subscription,
+          avatar: user.avatarURL,
+          verified: user.verified,
+        },
         token,
       },
     });
