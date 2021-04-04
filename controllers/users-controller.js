@@ -166,10 +166,14 @@ async function current(req, res, next) {
       status: Status.SUCCESS,
       code: HttpCode.OK,
       data: {
-        id: req.user.id,
-        email: req.user.email,
-        subscription: req.user.subscription,
-        avatar: req.user.avatarURL,
+        user: {
+          name: req.user.name,
+          id: req.user.id,
+          email: req.user.email,
+          subscription: req.user.subscription,
+          avatar: req.user.avatarURL,
+          verified: req.user.verified,
+        },
       },
     });
   } catch (e) {
