@@ -45,6 +45,7 @@ async function create(req, res, next) {
   try {
     const userId = req.user.id;
     const contact = await Contacts.addContact({ ...req.body, owner: userId });
+    console.log(contact);
     return res.status(HttpCode.CREATED).json({
       status: Status.SUCCESS,
       code: HttpCode.CREATED,

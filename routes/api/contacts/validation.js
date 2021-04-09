@@ -1,55 +1,19 @@
 const Joi = require('joi');
-const { HttpCode, ContactType } = require('../../../helpers/constants');
+const { HttpCode } = require('../../../helpers/constants');
 
 const schemaCreateContact = Joi.object({
   name: Joi.string().alphanum().min(3).max(30).required(),
-  email: Joi.string().email().required(),
-  phone: Joi.number().required(),
-  category: Joi.string().valid(
-    ContactType.OTHER,
-    ContactType.FRIEND,
-    ContactType.WORK,
-  ),
+  number: Joi.number().required(),
 });
 
 const schemaUpdateContactField = Joi.alternatives().try(
   Joi.object({
     name: Joi.string().alphanum().min(3).max(30).required(),
-    email: Joi.string().email(),
-    phone: Joi.number(),
-    category: Joi.string().valid(
-      ContactType.OTHER,
-      ContactType.FRIEND,
-      ContactType.WORK,
-    ),
+    number: Joi.string(),
   }),
   Joi.object({
     name: Joi.string().alphanum().min(3).max(30),
-    email: Joi.string().email().required(),
-    phone: Joi.number(),
-    category: Joi.string().valid(
-      ContactType.OTHER,
-      ContactType.FRIEND,
-      ContactType.WORK,
-    ),
-  }),
-  Joi.object({
-    name: Joi.string().alphanum().min(3).max(30),
-    email: Joi.string().email(),
-    phone: Joi.number().required(),
-    category: Joi.string().valid(
-      ContactType.OTHER,
-      ContactType.FRIEND,
-      ContactType.WORK,
-    ),
-  }),
-  Joi.object({
-    name: Joi.string().alphanum().min(3).max(30),
-    email: Joi.string().email(),
-    phone: Joi.number(),
-    category: Joi.string()
-      .valid(ContactType.OTHER, ContactType.FRIEND, ContactType.WORK)
-      .required(),
+    number: Joi.number().required(),
   }),
 );
 
