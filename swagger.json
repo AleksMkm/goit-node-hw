@@ -28,7 +28,7 @@
   "paths": {
     "/auth/signup": {
       "post": {
-        "tags": ["User"],
+        "tags": ["Auth"],
         "summary": "User registration",
         "parameters": [],
         "requestBody": {
@@ -70,7 +70,7 @@
     },
     "/auth/verify/{verificationToken}": {
       "post": {
-        "tags": ["User"],
+        "tags": ["Auth"],
         "summary": "User verification",
         "parameters": [
           {
@@ -104,7 +104,7 @@
     },
     "/auth/login": {
       "post": {
-        "tags": ["User"],
+        "tags": ["Auth"],
         "summary": "User login",
         "parameters": [],
         "requestBody": {
@@ -143,7 +143,7 @@
     },
     "/auth/logout": {
       "post": {
-        "tags": ["User"],
+        "tags": ["Auth"],
         "summary": "User logout",
         "parameters": [],
         "security": [{ "Bearer": [] }],
@@ -162,7 +162,7 @@
     },
     "/auth/current": {
       "get": {
-        "tags": ["User"],
+        "tags": ["Auth"],
         "summary": "Current user",
         "parameters": [],
         "security": [{ "Bearer": [] }],
@@ -191,7 +191,7 @@
     },
     "/auth/sub": {
       "patch": {
-        "tags": ["User"],
+        "tags": ["Auth"],
         "summary": "Change user's subscription",
         "parameters": [],
         "security": [{ "Bearer": [] }],
